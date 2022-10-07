@@ -422,32 +422,34 @@ def generate_security_swagger_spec():
         LOGGER.error(str(ex))
 
 ### swagger specific ###
-NATIVE_PREFIX = '/allure-docker-service'
-SWAGGER_ENDPOINT = '/swagger'
-SWAGGER_SPEC_FILE = '/swagger.json'
+#NATIVE_PREFIX = '/allure-docker-service'
+#SWAGGER_ENDPOINT = '/swagger'
+#SWAGGER_SPEC_FILE = '/swagger.json'
 
-SWAGGER_ENDPOINT_PATH = '{}{}'.format(NATIVE_PREFIX, SWAGGER_ENDPOINT)
-SWAGGER_SPEC = '{}{}'.format(NATIVE_PREFIX, SWAGGER_SPEC_FILE)
+#SWAGGER_ENDPOINT_PATH = '{}{}'.format(NATIVE_PREFIX, SWAGGER_ENDPOINT)
+#SWAGGER_SPEC = '{}{}'.format(NATIVE_PREFIX, SWAGGER_SPEC_FILE)
 
-if URL_PREFIX:
-    SWAGGER_ENDPOINT_PATH = '{}{}{}'.format(URL_PREFIX, NATIVE_PREFIX, SWAGGER_ENDPOINT)
-    SWAGGER_SPEC = '{}{}{}'.format(URL_PREFIX, NATIVE_PREFIX, SWAGGER_SPEC_FILE)
+#if URL_PREFIX:
+#    SWAGGER_ENDPOINT_PATH = '{}{}{}'.format(URL_PREFIX, NATIVE_PREFIX, SWAGGER_ENDPOINT)
+#    SWAGGER_SPEC = '{}{}{}'.format(URL_PREFIX, NATIVE_PREFIX, SWAGGER_SPEC_FILE)
 
-SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-    base_url=SWAGGER_ENDPOINT_PATH,
-    api_url=SWAGGER_SPEC,
-    config={
-        'app_name': "Allure Docker Service"
-    }
-)
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix="/")
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=NATIVE_PREFIX)
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_ENDPOINT)
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_ENDPOINT_PATH)
-if URL_PREFIX:
-    app.register_blueprint(SWAGGERUI_BLUEPRINT,
-        url_prefix='{}{}'.format(NATIVE_PREFIX, SWAGGER_ENDPOINT))
+#SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+#    base_url=SWAGGER_ENDPOINT_PATH,
+#    api_url=SWAGGER_SPEC,
+#    config={
+#        'app_name': "Allure Docker Service"
+#    }
+#)
+#app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix="/")
+#app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=NATIVE_PREFIX)
+#app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_ENDPOINT)
+#app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_ENDPOINT_PATH)
+#if URL_PREFIX:
+#    app.register_blueprint(SWAGGERUI_BLUEPRINT,
+#        url_prefix='{}{}'.format(NATIVE_PREFIX, SWAGGER_ENDPOINT))
 ### end swagger specific ###
+
+
 
 ### Security Section
 if ENABLE_SECURITY_LOGIN:
@@ -698,32 +700,36 @@ def refresh_endpoint():
         return resp, 400
 ### end Security Endpoints Section
 
-@app.route("/swagger.json")
-@app.route("/allure-docker-service/swagger.json", strict_slashes=False)
-def swagger_json_endpoint():
-    try:
-        specification_file = 'swagger.json'
-        if ENABLE_SECURITY_LOGIN:
-            specification_file = 'swagger_security.json'
+@app.route("/")
+def index():
+    return "<h1>Hello, World!</h1>"
 
-        if URL_PREFIX:
-            spec = get_file_as_string("{}/swagger/{}".format(STATIC_CONTENT, specification_file))
-            spec_json = eval(spec) #pylint: disable=eval-used
-            server_url = spec_json['servers'][0]['url']
-            spec_json['servers'][0]['url'] = '{}{}'.format(URL_PREFIX, server_url)
-            return jsonify(spec_json)
+#@app.route("/swagger.json")
+#@app.route("/allure-docker-service/swagger.json", strict_slashes=False)
+#def swagger_json_endpoint():
+#    try:
+#        specification_file = 'swagger.json'
+#        if ENABLE_SECURITY_LOGIN:
+#            specification_file = 'swagger_security.json'
 
-        return send_file("{}/swagger/{}"
-                         .format(STATIC_CONTENT, specification_file), mimetype='application/json')
-    except Exception as ex:
-        body = {
-            'meta_data': {
-                'message' : str(ex)
-            }
-        }
-        resp = jsonify(body)
-        resp.status_code = 400
-        return resp
+#        if URL_PREFIX:
+#            spec = get_file_as_string("{}/swagger/{}".format(STATIC_CONTENT, specification_file))
+#            spec_json = eval(spec) #pylint: disable=eval-used
+#            server_url = spec_json['servers'][0]['url']
+#            spec_json['servers'][0]['url'] = '{}{}'.format(URL_PREFIX, server_url)
+#            return jsonify(spec_json)
+
+#        return send_file("{}/swagger/{}"
+#                         .format(STATIC_CONTENT, specification_file), mimetype='application/json')
+#    except Exception as ex:
+#        body = {
+#            'meta_data': {
+#                'message' : str(ex)
+#            }
+#        }
+#        resp = jsonify(body)
+#        resp.status_code = 400
+#        return resp
 
 @app.route("/version", strict_slashes=False)
 @app.route("/allure-docker-service/version", strict_slashes=False)
