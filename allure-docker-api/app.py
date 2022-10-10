@@ -421,6 +421,13 @@ def generate_security_swagger_spec():
     except Exception as ex:
         LOGGER.error(str(ex))
 
+# default index page
+@app.route("/")
+def index():
+    return "<h1>Hello, World!</h1>"
+
+## remarking this to prevent this from showing
+
 ### swagger specific ###
 #NATIVE_PREFIX = '/allure-docker-service'
 #SWAGGER_ENDPOINT = '/swagger'
@@ -449,7 +456,7 @@ def generate_security_swagger_spec():
 #        url_prefix='{}{}'.format(NATIVE_PREFIX, SWAGGER_ENDPOINT))
 ### end swagger specific ###
 
-
+## end of remarking
 
 ### Security Section
 if ENABLE_SECURITY_LOGIN:
@@ -699,10 +706,6 @@ def refresh_endpoint():
         resp = jsonify(body)
         return resp, 400
 ### end Security Endpoints Section
-
-@app.route("/")
-def index():
-    return "<h1>Hello, World!</h1>"
 
 #@app.route("/swagger.json")
 #@app.route("/allure-docker-service/swagger.json", strict_slashes=False)
